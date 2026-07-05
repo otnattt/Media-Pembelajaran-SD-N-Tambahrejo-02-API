@@ -1,27 +1,37 @@
 FROM php:8.3-cli
 
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
     zip \
+    ffmpeg \
     libzip-dev \
     libpng-dev \
     libonig-dev \
-    libxml2-dev
+    libxml2-dev \
+    libjpeg62-turbo-dev \
+    libfreetype6-dev
 
-RUN docker-php-ext-install pdo pdo_mysql zip
+# Install PHP extensions
+RUN docker-php-ext-install \
+    pdo \
+    pdo_mysql \
+    zip \
+    mbstring \
+    exif \
+    pcntl
 
+# Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-WORKDIR /app
+WORKDIR /var/www
 
 COPY . .
 
 RUN composer install --no-dev --optimize-autoloader
 
-RUN cp .env.example .env || true
-
-RUN php artisan key:generate || true
+RUN php artisan storage:link || true
 
 EXPOSE 10000
 
