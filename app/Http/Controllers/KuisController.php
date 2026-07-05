@@ -178,8 +178,6 @@ public function listKuis()
         'status' =>
             $request->status,
 
-        'tanggal_dibuat' =>
-            now(),
 
         'total_soal' =>
             count($request->soal),

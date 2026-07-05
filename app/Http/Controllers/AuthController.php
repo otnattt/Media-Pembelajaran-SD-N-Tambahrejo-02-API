@@ -13,7 +13,12 @@ class AuthController extends Controller
         $request->validate([
             'login' => 'required',
             'password' => 'required'
-        ]);
+        ],
+         [
+        'login.required' => 'Username wajib diisi.',
+        'password.required' => 'Password wajib diisi.',
+        ]
+        );
 
         $guru = DB::table('tb_guru')
             ->where('username', $request->login)

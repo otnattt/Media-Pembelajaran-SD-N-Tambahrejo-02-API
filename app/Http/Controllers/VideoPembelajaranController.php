@@ -63,4 +63,58 @@ class VideoPembelajaranController extends Controller
         'data' => $video
     ]);
 }
+public function stream($file)
+{
+    $path = public_path("video/" . $file);
+
+    if (!file_exists($path)) {
+        abort(404);
+    }
+
+    $size = filesize($path);
+    $start = 0;
+    $end = $size - 1;
+
+    $headers = [
+        'Content-Type' => 'video/mp4',
+        'Accept-Ranges' => 'bytes',
+    ];
+
+    if (isset($_SERVER['HTTP_RANGE'])) {
+
+        preg_match('/bytes=(\d+)-(\d*)/', $_SERVER['HTTP_RANGE'], $matches);
+
+        $start = intval($matches[1]);
+
+        if ($matches[2] != '') {
+            $end = intval($matches[2]);
+        }
+
+        $length = $end - $start + 1;
+
+        $headers['Content-Length'] = $length;
+        $headers['Content-Range'] = "bytes $start-$end/$size";
+
+        return response()->stream(function () use ($path, $start, $length) {
+
+            $fp = fopen($path, 'rb');
+
+            fseek($fp, $start);
+
+            echo fread($fp, $length);
+
+            fclose($fp);
+
+        }, 206, $headers);
+    }
+
+    $headers['Content-Length'] = $size;
+
+    return response()->stream(function () use ($path) {
+
+        readfile($path);
+
+    }, 200, $headers);
+}
+
 }
