@@ -46,9 +46,12 @@ RUN composer install \
     --optimize-autoloader
 
 # Cache Laravel
-RUN php artisan config:cache || true
-RUN php artisan route:cache || true
-RUN php artisan view:cache || true
+...
+RUN composer install \
+    --no-dev \
+    --prefer-dist \
+    --no-interaction \
+    --optimize-autoloader
 
 RUN php artisan storage:link || true
 
