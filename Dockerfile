@@ -1,5 +1,6 @@
 FROM php:8.3-cli
 
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
@@ -13,8 +14,10 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libxml2-dev
 
+# Configure GD
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg
 
+# Install PHP extensions
 RUN docker-php-ext-install \
     gd \
     pdo \
@@ -24,22 +27,31 @@ RUN docker-php-ext-install \
     pcntl \
     zip
 
+# Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www
 
-COPY composer.json composer.lock ./
+# Copy seluruh project Laravel terlebih dahulu
+COPY . .
 
+# Izinkan Composer berjalan sebagai root
+ENV COMPOSER_ALLOW_SUPERUSER=1
+
+# Install dependency
 RUN composer install \
     --no-dev \
     --prefer-dist \
     --no-interaction \
     --optimize-autoloader
 
-COPY . .
+# Cache Laravel
+RUN php artisan config:cache || true
+RUN php artisan route:cache || true
+RUN php artisan view:cache || true
 
 RUN php artisan storage:link || true
 
 EXPOSE 10000
 
-CMD php artisan serve --host=0.0.0.0 --port=10000
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=10000"]
