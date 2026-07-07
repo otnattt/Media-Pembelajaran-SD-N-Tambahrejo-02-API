@@ -416,9 +416,12 @@ public function submitQuiz(Request $request)
 
     if ($jmlSoal > 0) {
 
-        $nilai = round(
-            ($jumlahBenar / $jmlSoal) * 100,
-            2
+        $nilai = min(
+    round(
+        ($jumlahBenar / $jmlSoal) * 100,
+        2
+    ),
+            100
         );
     }
 
