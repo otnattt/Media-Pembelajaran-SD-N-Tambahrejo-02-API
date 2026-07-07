@@ -1,6 +1,6 @@
 FROM php:8.3-cli
 
-# Install system dependencies
+# Install dependencies
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
@@ -32,29 +32,18 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www
 
-# Copy seluruh project Laravel terlebih dahulu
+# Copy project
 COPY . .
 
-# Izinkan Composer berjalan sebagai root
+# Allow composer as root
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
-# Install dependency
-RUN composer install \
-    --no-dev \
-    --prefer-dist \
-    --no-interaction \
-    --optimize-autoloader
+# Install dependencies
+RUN composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader
 
-# Cache Laravel
-...
-RUN composer install \
-    --no-dev \
-    --prefer-dist \
-    --no-interaction \
-    --optimize-autoloader
-
+# Storage link
 RUN php artisan storage:link || true
 
 EXPOSE 10000
 
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=10000"]
+CMD ["sh", "-c", "php artisan serve --host=0.0.0.0 --port=${PORT:-10000}"]
