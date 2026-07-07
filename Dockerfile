@@ -27,6 +27,7 @@ RUN docker-php-ext-install \
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www
+COPY php.ini /usr/local/etc/php/conf.d/uploads.ini
 
 COPY . .
 
