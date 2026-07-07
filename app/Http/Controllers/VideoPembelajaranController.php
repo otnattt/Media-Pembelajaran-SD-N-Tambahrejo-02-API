@@ -18,7 +18,7 @@ class VideoPembelajaranController extends Controller
     // simpan video
    public function store(Request $request)
 {
-    
+
 
     $request->validate([
         'id_guru' => 'required',
@@ -32,7 +32,11 @@ class VideoPembelajaranController extends Controller
 
         $namaFile = time().'_'.$file->getClientOriginalName();
 
-        $file->move(public_path('video'), $namaFile);
+        $file->storeAs(
+            'video',
+            $namaFile,
+            'public'
+        );
 
         $video = VideoPembelajaran::create([
             'id_guru' => $request->id_guru,
@@ -77,8 +81,7 @@ class VideoPembelajaranController extends Controller
 }
 public function stream($file)
 {
-    $path = public_path("video/" . $file);
-
+    $path = storage_path("app/public/video/" . $file);
     if (!file_exists($path)) {
         abort(404);
     }
