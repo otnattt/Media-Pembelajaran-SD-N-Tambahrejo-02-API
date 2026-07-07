@@ -26,8 +26,7 @@ Route::put('/guru/{id}', [GuruController::class, 'updateProfile']);
 Route::get('/video', [VideoPembelajaranController::class, 'index']);
 Route::post('/video', [VideoPembelajaranController::class, 'store']);
 Route::put('/video/{id}', [VideoPembelajaranController::class, 'update']);
-Route::get('/video/stream/{file}', [VideoPembelajaranController::class, 'stream'])
-    ->where('file', '.*');
+Route::get('/video/stream/{id}', [VideoPembelajaranController::class, 'stream']);
 
 Route::get('/siswa', [SiswaController::class, 'index']);
 Route::post('/siswa', [SiswaController::class, 'store']);

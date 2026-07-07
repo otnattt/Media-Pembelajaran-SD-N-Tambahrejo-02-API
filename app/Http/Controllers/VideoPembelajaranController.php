@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\VideoPembelajaran;
 use Illuminate\Support\Facades\Storage;
-
+use App\Models\VideoPembelajaran;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 class VideoPembelajaranController extends Controller
 {
     // tampil data
@@ -80,14 +80,22 @@ class VideoPembelajaranController extends Controller
         'data' => $video
     ]);
 }
-public function stream($file)
+public function stream($id)
 {
-    $path = storage_path('app/public/video/' . $file);
+    $video = VideoPembelajaran::findOrFail($id);
 
-    return response()->json([
-        'path' => $path,
-        'exists' => file_exists($path),
+    $path = Storage::disk('public')->path('video/' . $video->file_video);
+
+    if (!file_exists($path)) {
+        return response()->json([
+            'message' => 'File video tidak ditemukan',
+            'path' => $path
+        ], 404);
+    }
+
+    return response()->file($path, [
+        'Content-Type' => 'video/mp4',
+        'Accept-Ranges' => 'bytes'
     ]);
 }
-
 }
