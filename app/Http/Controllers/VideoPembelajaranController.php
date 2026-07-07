@@ -17,43 +17,48 @@ class VideoPembelajaranController extends Controller
 
     // simpan video
     public function store(Request $request)
-    {
-            return response()->json([
-        'hasFile' => $request->hasFile('file_video'),
-        'files' => $request->allFiles(),
-        'post' => $request->all(),
+{
+    $request->validate([
+        'id_guru' => 'required',
+        'judul' => 'required',
+        'file_video' => 'required|file|mimes:mp4,mov,avi|max:307200',
+        'durasi_video' => 'nullable'
     ]);
 
-        $request->validate([
-            'id_guru' => 'required',
-            'judul' => 'required',
-            'file_video' => 'required|file|mimes:mp4,mov,avi|max:307200',
-            'durasi_video' => 'nullable'
-        ]);
+    try {
 
-        // upload file
         $file = $request->file('file_video');
 
-        $namaFile = time() . '_' . $file->getClientOriginalName();
+        $namaFile = time().'_'.$file->getClientOriginalName();
 
         $file->move(public_path('video'), $namaFile);
 
-        // simpan database
         $video = VideoPembelajaran::create([
-        'id_guru' => $request->id_guru,
-        'judul' => $request->judul,
-        'deskripsi' => $request->deskripsi,
-        'file_video' => $namaFile,
-        'durasi_video' => $request->durasi_video,
-        'status_video' => 'aktif'
-    ]);
+            'id_guru' => $request->id_guru,
+            'judul' => $request->judul,
+            'deskripsi' => $request->deskripsi,
+            'file_video' => $namaFile,
+            'durasi_video' => $request->durasi_video,
+            'status_video' => 'aktif'
+        ]);
 
         return response()->json([
             'success' => true,
             'message' => 'Video berhasil disimpan',
             'data' => $video
         ]);
+
+    } catch (\Throwable $e) {
+
+        return response()->json([
+            'success' => false,
+            'message' => $e->getMessage(),
+            'line' => $e->getLine(),
+            'file' => $e->getFile()
+        ],500);
+
     }
+}
     public function update(Request $request, $id)
 {
     $video = VideoPembelajaran::findOrFail($id);
