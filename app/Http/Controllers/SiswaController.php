@@ -12,12 +12,12 @@ class SiswaController extends Controller
     // GET DATA
     // =========================
         public function index()
-        {
-            return response()->json(
-                Siswa::orderBy('id_siswa', 'desc')
-                    ->get()
-            );
-        }
+            {
+                return response()->json(
+                    Siswa::orderBy('nama', 'asc')
+                        ->get()
+                );
+            }
 
         public function siswaAktif()
         {
