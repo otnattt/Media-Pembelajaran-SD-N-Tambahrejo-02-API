@@ -10,6 +10,8 @@ class DetailKuis extends Model
 
     protected $primaryKey = 'id_detail_kuis';
 
+    public $timestamps = false;
+
     protected $fillable = [
         'id_kuis',
         'pertanyaan',
