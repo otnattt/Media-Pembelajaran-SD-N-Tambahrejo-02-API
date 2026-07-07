@@ -18,7 +18,12 @@ class VideoPembelajaranController extends Controller
     // simpan video
     public function store(Request $request)
     {
-        
+            return response()->json([
+        'hasFile' => $request->hasFile('file_video'),
+        'files' => $request->allFiles(),
+        'post' => $request->all(),
+    ]);
+
         $request->validate([
             'id_guru' => 'required',
             'judul' => 'required',
