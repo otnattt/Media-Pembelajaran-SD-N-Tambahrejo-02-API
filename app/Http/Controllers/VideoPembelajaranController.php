@@ -16,13 +16,17 @@ class VideoPembelajaranController extends Controller
     }
 
     // simpan video
-    public function store(Request $request)
+   public function store(Request $request)
 {
+    return response()->json([
+        'all' => $request->all(),
+        'files' => $request->allFiles()
+    ]);
+
     $request->validate([
         'id_guru' => 'required',
         'judul' => 'required',
         'file_video' => 'required|file|mimes:mp4,mov,avi|max:307200',
-        'durasi_video' => 'nullable'
     ]);
 
     try {
