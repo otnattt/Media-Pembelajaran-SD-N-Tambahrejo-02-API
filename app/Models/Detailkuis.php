@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+
 class DetailKuis extends Model
 {
     protected $table = 'tb_detail_kuis';
