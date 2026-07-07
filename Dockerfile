@@ -42,6 +42,4 @@ RUN php artisan storage:link || true
 
 EXPOSE 10000
 
-EXPOSE 10000
-
-CMD ["sh", "-c", "php -S 0.0.0.0:${PORT:-10000} -t public"]
+CMD ["php","-S","0.0.0.0:10000","-t","public"]
